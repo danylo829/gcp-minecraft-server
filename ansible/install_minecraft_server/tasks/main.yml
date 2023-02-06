@@ -15,8 +15,9 @@
   
   - name: Download minecraft server
     get_url:
-      url:  https://piston-data.mojang.com/v1/objects/c9df48efed58511cdd0213c56b9013a7b5c9ac1f/server.jar
+      url:  "{{server_url}}"
       dest: "{{project_folder}}"
+    notify: Restart server service
 
   - name: Copy Minecraft EULA
     copy: 

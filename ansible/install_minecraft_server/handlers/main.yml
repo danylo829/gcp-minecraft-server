@@ -5,3 +5,4 @@
       state: restarted
       enabled: yes
       name: minecraft_server
+    ignore_errors: true
