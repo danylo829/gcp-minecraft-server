@@ -1,0 +1,8 @@
+---
+  - name: Reload grok service
+    systemd:
+      state: restarted
+      enabled: yes
+      name: grok_exporter
+
+

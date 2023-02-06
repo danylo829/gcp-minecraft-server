@@ -1,0 +1,16 @@
+[Unit]
+Description=Grok Exporter
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Nice=-5
+ExecStart={{ grok_folder }}/grok_exporter-0.2.7.linux-amd64/grok_exporter -config {{ grok_folder }}/service_config.yml
+
+SyslogIdentifier="grok_exporter"
+Restart=always
+StartLimitBurst=1000
+
+[Install]
+WantedBy=multi-user.target

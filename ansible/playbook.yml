@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: true
+
+  roles:
+    - {role: install_grok_exporter,     when: ansible_hostname == "server"}
+    - {role: install_node_exporter,     when: ansible_hostname == "server"}
+    - {role: install_minecraft_server,  when: ansible_hostname == "server"}
+    - {role: install_docker,            when: ansible_hostname == "monitoring"}
+    - {role: install_moni,              when: ansible_hostname == "monitoring"}

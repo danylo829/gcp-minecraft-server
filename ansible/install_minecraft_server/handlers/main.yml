@@ -1,0 +1,7 @@
+---
+# handlers file for install_minecraft_server
+  - name: Restart server service
+    systemd:
+      state: restarted
+      enabled: yes
+      name: minecraft_server

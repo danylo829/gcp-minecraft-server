@@ -1,0 +1,68 @@
+---
+# tasks file for install_moni
+  - name: Create project folder moni
+    file:
+      path: "{{ project_folder }}"
+      state: directory
+
+  - name: Copy docker compose file
+    copy:
+      src: docker-compose.yml
+      dest: "{{ project_folder }}/docker-compose.yml"
+
+  - name: Deploy Docker Compose stack
+    community.docker.docker_compose:
+      project_src: "{{ project_folder }}"
+      files:
+      - docker-compose.yml
+  
+  - name: Copy blackbox config file
+    copy:
+      src: "blackbox.yml"
+      dest: /etc/blackbox/
+    notify: Restart blackbox
+
+  - name: Copy prometheus config files
+    copy:
+      src: "{{ item }}"
+      dest: /etc/prometheus/
+    loop:
+      - "alerts_rules.yml"
+      - "prometheus.yml"
+    notify: Restart prometheus
+  
+  - name: Copy alertmanager config file
+    template:
+      src: "alertmanager.yml"
+      dest: /etc/alertmanager/
+    notify: Restart alertmanager
+    
+  - name: Create directory for dashboards
+    file:
+      path: /etc/grafana/provisioning/dashboards
+      state: directory
+
+  - name: Create directory for datasources
+    file:
+      path: /etc/grafana/provisioning/datasources
+      state: directory
+  
+  - name: Copy grafana datasource file
+    copy:
+      src: datasource.yml
+      dest: /etc/grafana/provisioning/datasources
+    notify: Restart grafana
+
+  - name: Copy grafana dashboard file
+    copy:
+      src: "dashboard.yml"
+      dest: /etc/grafana/provisioning/dashboards
+    notify: Restart grafana
+
+  - name: Copy grafana dashboard jsons
+    copy:
+      src: "{{item}}"
+      dest: /etc/grafana/provisioning/dashboards
+    with_fileglob:
+      - "dashboards/*"
+    notify: Restart grafana

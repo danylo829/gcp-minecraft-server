@@ -1,0 +1,54 @@
+global:
+  scrape_interval:     15s
+  
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+       - "alertmanager:9093"
+
+rule_files:
+  - "alerts_rules.yml"
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'node_exporter'
+    static_configs:
+      - targets: ['node_exporter:9100']
+        labels:
+          instance: 'monitoring_server'
+      - targets: ['server:9100']
+        labels:
+          instance: "minecraft_server"
+
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+        labels:
+          instance: 'self_cadvisor'
+
+  - job_name: 'grok_exporter'
+    static_configs:
+      - targets: ['server:9144']
+        labels:
+          instance: 'server'
+
+  - job_name: 'blackbox'
+    metrics_path: 'probe'
+    params:
+      module: [tcp_connect]
+    tls_config:
+      insecure_skip_verify: true
+    static_configs:
+      - targets:
+        - server:25565
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: "blackbox:9115"

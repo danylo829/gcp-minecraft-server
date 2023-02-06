@@ -1,0 +1,4 @@
+---
+# defaults file for install_moni
+  project_folder: "/usr/monitoring"
+  telepush_token: "1c718e"

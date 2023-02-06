@@ -1,0 +1,13 @@
+---
+# handlers file for install_moni
+- name: Restart prometheus
+  command: docker restart prometheus
+
+- name: Restart blackbox
+  command: docker restart blackbox
+
+- name: Restart alertmanager
+  command: docker restart alertmanager
+
+- name: Restart grafana
+  command: docker restart grafana

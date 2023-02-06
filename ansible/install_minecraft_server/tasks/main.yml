@@ -1,0 +1,47 @@
+---
+# tasks file for install_minecraft_server
+  - name: Install Java and moreutils
+    apt:
+      name: 
+        - openjdk-17-jdk-headless
+        - moreutils
+      state: present
+      update_cache: yes
+
+  - name: Create project folder
+    file:
+      path: "{{ project_folder }}"
+      state: directory
+  
+  - name: Download minecraft server
+    get_url:
+      url:  https://piston-data.mojang.com/v1/objects/c9df48efed58511cdd0213c56b9013a7b5c9ac1f/server.jar
+      dest: "{{project_folder}}"
+
+  - name: Copy Minecraft EULA
+    copy: 
+      src:  eula.txt
+      dest: "{{project_folder}}"
+
+  - name: Copy server properties
+    template: 
+      src: server.properties
+      dest: "{{project_folder}}"
+    notify: Restart server service
+    
+
+  - name: Copy server service file
+    template: 
+      src: minecraft_server.service
+      dest: /etc/systemd/system/
+    notify: Restart server service
+
+  - name: Reload deamon
+    shell: systemctl daemon-reload
+
+  - name: Start server
+    systemd:
+      state: started
+      enabled: yes
+      name: minecraft_server
+

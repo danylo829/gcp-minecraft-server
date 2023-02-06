@@ -1,0 +1,42 @@
+---
+  - name: Create grok folder
+    file:
+      path: "{{ grok_folder }}"
+      state: directory
+
+  - name: Install unzip
+    apt:
+      name: unzip
+      state: present
+
+  - name: Download grok
+    get_url:
+      url: https://github.com/fstab/grok_exporter/releases/download/v0.2.7/grok_exporter-0.2.7.linux-amd64.zip
+      dest: "{{ grok_folder }}"
+
+  - name: Extract grok
+    unarchive:
+      src: "{{ grok_folder }}/grok_exporter-0.2.7.linux-amd64.zip"
+      dest: "{{ grok_folder }}"
+      remote_src: yes
+
+  - name: Copy grok service file
+    template: 
+      src: grok_exporter.service
+      dest: /etc/systemd/system/
+    notify: Reload grok service
+
+  - name: Copy grok config
+    copy: 
+      src:  service_config.yml
+      dest: "{{grok_folder}}"
+    notify: Reload grok service
+
+  - name: Reload deamon
+    shell: systemctl daemon-reload
+
+  - name: Start grok
+    systemd:
+      state: started
+      enabled: yes
+      name: grok_exporter

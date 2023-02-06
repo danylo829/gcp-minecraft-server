@@ -1,0 +1,8 @@
+---
+# defaults file for install_moni
+  project_folder: "/usr/minecraft_server"
+
+  #Edit
+  server_name:    "Pigeon's server"
+  max_ram:        2048  #in MB
+  online:         false

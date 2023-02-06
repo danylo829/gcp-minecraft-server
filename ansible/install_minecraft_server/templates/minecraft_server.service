@@ -1,0 +1,19 @@
+[Unit]
+Description=Minecraft server
+StartLimitIntervalSec=0
+StartLimitBurst=5
+StartLimitIntervalSec=10
+
+[Service]
+WorkingDirectory={{ project_folder }}
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+ExecStart=/bin/bash -c "java -Xms1024M -Xmx{{ max_ram }}M -jar {{ project_folder }}/server.jar nogui >(/usr/bin/ts '[%%Y-%%m-%%d %%H:%%M:%%S]' >&2) | /usr/bin/ts '[%%Y-%%m-%%d %%H:%%M:%%S]'"
+
+StandardOutput=append:/var/log/minecraft_server.log
+StandardError=append:/var/log/minecraft_server.log
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,3 @@
+modules:
+  tcp_connect:
+    prober: tcp

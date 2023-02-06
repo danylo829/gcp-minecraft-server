@@ -1,0 +1,25 @@
+global:
+  config_version: 2
+
+input:
+  type: file
+  path: /var/log/minecraft_server.log
+  readall: true
+  fail_on_missing_logfile: true
+  poll_interval: 5s
+
+grok:
+  patterns_dir: "/etc/grok_exporter/grok_exporter-0.2.7.linux-amd64/patterns"
+
+metrics:
+  - type: counter
+    name: minecraft_server_total
+    help: Logs of minecraft server
+    match: '\[%{GREEDYDATA:date}\] \[%{TIME}\] \[%{GREEDYDATA}\]: %{GREEDYDATA:message}'
+    labels:
+      Date_time: "{{.date}}"
+      Message: "{{ .message }}"
+
+
+server:
+  port: 9144
